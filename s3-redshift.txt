@@ -1,0 +1,160 @@
+#S3 to Redshift
+
+
+Create a cluster in redshift For eg: 'retail-data-cluster'
+register admin user & password 
+For eg: 'user':ashraf
+        'password': example
+
+Now after creating the cluster open redshift query editor version2 
+launch the cluster and enter into database 'dev'
+
+Now first you need to create schema tables for the OLAP Columns and then you need to copy data from AWS S3
+
+Creating schema tables and dumping data for each tables 
+
+#dim_date column
+'''
+
+create table "dim_date"(
+    date_id integer,
+    dates date,
+    dayofweek integer,
+    dayofmonth integer,
+    weeknumber integer,
+    quarternumber integer,
+    monthnumber integer,
+    year integer
+);
+
+COPY "dim_date" 
+From 's3://retail-project-bucket/olap/dim_date.csv'
+IAM_ROLE 'arn:aws:iam::795430850066:role/service-role/AmazonRedshift-CommandsAccessRole-20230517T121009'
+DATEFORMAT 'auto'
+IGNOREHEADER 1
+DELIMITER ','
+REGION 'ap-south-1'
+
+'''
+#dim_customer
+
+'''
+CREATE TABLE "dim_customer"
+    (
+        temp_id integer,
+        customer_id integer ,
+        customerName varchar ,
+        sales_employee_id varchar ,
+        addressLine1 varchar ,
+        addressLine2 varchar ,
+        creditLimit decimal(10,2) 
+    )
+;
+COPY "dim_customer" 
+From 's3://retail-project-bucket/olap/dim_customer.csv'
+IAM_ROLE 'arn:aws:iam::795430850066:role/service-role/AmazonRedshift-CommandsAccessRole-20230517T121009'
+DATEFORMAT 'auto'
+IGNOREHEADER 1
+DELIMITER ','
+REGION 'ap-south-1'
+
+'''
+
+#dim_location
+
+'''
+CREATE TABLE "dim_location"
+    (
+        temp_id integer,
+        location_id bigint,
+        city varchar,
+        state varchar,
+        postalCode varchar,
+        country varchar
+    )
+;
+COPY "dim_location" 
+From 's3://retail-project-bucket/olap/dim_location.csv'
+IAM_ROLE 'arn:aws:iam::795430850066:role/service-role/AmazonRedshift-CommandsAccessRole-20230517T121009'
+DATEFORMAT 'auto'
+IGNOREHEADER 1
+DELIMITER ','
+REGION 'ap-south-1'
+
+'''
+
+#dim_employee
+
+create table "dim_employee"(
+    date_id integer,
+    employee_id integer,
+    firstName varchar,
+    lastName varchar,
+    extension varchar,
+    email_id varchar,
+    officeCode varchar,
+    supervisor_id integer,
+    jobTitle varchar
+);
+COPY "dim_employee" 
+From 's3://retail-project-bucket/olap/dim_employee.csv'
+IAM_ROLE 'arn:aws:iam::795430850066:role/service-role/AmazonRedshift-CommandsAccessRole-20230517T121009'
+DATEFORMAT 'auto'
+IGNOREHEADER 1
+DELIMITER ','
+REGION 'ap-south-1'
+
+'''
+
+#dim_product
+
+'''
+
+create table "dim_product"(
+    date_id integer,
+    product_id integer,
+    productName varchar,
+    productVendor varchar,
+    productScale varchar,
+    quantityInStock integer,
+    buyPrice decimal(10,2),
+    MSRP decimal(10,2)
+);
+COPY "dim_product" 
+From 's3://retail-project-bucket/olap/dim_product.csv'
+IAM_ROLE 'arn:aws:iam::795430850066:role/service-role/AmazonRedshift-CommandsAccessRole-20230517T121009'
+DATEFORMAT 'auto'
+IGNOREHEADER 1
+DELIMITER ','
+REGION 'ap-south-1'
+
+'''
+
+#fact_sales 
+
+'''
+
+CREATE TABLE "fact_sales"
+    (
+         temp_id integer,
+         customer_id integer, 
+         product_id varchar,
+         employee_id integer, 
+         location_id bigint, 
+         dates date ,
+         unit_price decimal(10,2), 
+         quantity integer ,
+         status varchar 
+
+    )
+;
+COPY "fact_sales"
+FROM 's3://retail-project-bucket/olap/fact_sales.csv'
+IAM_ROLE 'arn:aws:iam::795430850066:role/service-role/AmazonRedshift-CommandsAccessRole-20230517T121009'
+IGNOREHEADER 1
+DELIMITER ','
+REGION 'ap-south-1'
+
+'''
+
+#Now you can perform various analytical queries and play with data and do some magic !!!
