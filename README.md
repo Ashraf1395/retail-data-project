@@ -15,12 +15,15 @@ RedShift Dataware house(OLAP Design)
 ![Red Shift](./redshift-olap-diagram.png)
 
 Approach
-1. Read data from mysql using pyspark and perform transformations to create OLAP from OLTP and then dump it in S3 bucket
 
-2. Read data from s3 bucket and dump in REDSHIFT and perform Analytical Queries
+1. Create a database in mysql using following sql queries
+![MySQl](./mysqlsampledatabase.sql) Sql file link 
+
+2. Read data from mysql using pyspark and perform transformations to create OLAP from OLTP and then dump it in S3 bucket
+
+3. Read data from s3 bucket and dump in REDSHIFT and perform Analytical Queries
   
-
-3. We can Create KPI Reports using this data,Sales Dashboards or build Machine Learning Models.
+4. We can Create KPI Reports using this data,Sales Dashboards or build Machine Learning Models.
 Launch entire server setup
 ```
 
@@ -46,3 +49,6 @@ import boto3
 import pandas
 '''
 
+Now dump data from S3 to Redshift and perform analytical queries or use it create dashboards by linking it to powerBI etc
+
+![S3 Redshift](./s3-redshift.txt) Project Description
