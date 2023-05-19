@@ -18,8 +18,31 @@ Approach
 1. Read data from mysql using pyspark and perform transformations to create OLAP from OLTP and then dump it in S3 bucket
 
 2. Read data from s3 bucket and dump in REDSHIFT and perform Analytical Queries
-![s3-redshift](./s3-redshift.png)
+  
 
 3. We can Create KPI Reports using this data,Sales Dashboards or build Machine Learning Models.
 Launch entire server setup
 ```
+
+Below are requirements to be need to run this project
+
+mysql-connector-j-8.0.32
+
+'''
+conda install -c cyclus java-jdk
+'''
+Pyspark library and its functions
+'''
+pip install pyspark
+
+from pyspark.sql import SparkSession
+from pyspark.functions import *
+from pyspark.types import *
+'''
+Libraries needed for dumping data into s3
+'''
+from io import StringIO
+import boto3
+import pandas
+'''
+
